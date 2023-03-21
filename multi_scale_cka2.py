@@ -25,7 +25,7 @@ def forward_features(model, x):
     x3 = x
     x = model.layer4(x)
     x4 = x
-    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1)
 
 
 
@@ -34,7 +34,7 @@ def main():
     batch_size = 128
     dataset_size = 1280
     num_sweep = 10
-    num_features = 4
+    num_features = 3
     small_size=32
     large_size=224
 
@@ -75,12 +75,12 @@ def main():
     cka_matrix = cka_logger.compute()
 
     plt.title('Pretrained Resnet18 Layer CKA')
-    plt.xticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
-    plt.yticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
+    plt.xticks([0, 1, 2], ['Layer 1', 'Layer 2', 'Layer 3'])
+    plt.yticks([0, 1, 2], ['Layer 1', 'Layer 2', 'Layer 3'])
     plt.imshow(cka_matrix.numpy(), origin='lower', cmap='magma')
     plt.clim(0, 1)
     plt.colorbar()
-    plt.savefig('r18_cka_new4.png')
+    plt.savefig('r18_cka.png')
 
 if __name__ == '__main__':
     main()
