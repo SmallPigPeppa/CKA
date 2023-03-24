@@ -109,7 +109,7 @@ class MSNetPL2(pl.LightningModule):
     def __init__(self, args):
         super().__init__()
         self.args = args
-        self.encoder = BaselineNet()
+        self.encoder = BaselineNet2()
         self.ce_loss = nn.CrossEntropyLoss()
         self.mse_loss = nn.MSELoss()
 
