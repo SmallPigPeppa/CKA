@@ -69,12 +69,12 @@ class CKA_Minibatch(Module):
         if not gram:
             x1 = torch.matmul(x1, x1.transpose(0, 1))
             x2 = torch.matmul(x2, x2.transpose(0, 1))
-        # self.cross_hsic.append(linear_hsic(x1, x2))
-        # self.self_hsic1.append(linear_hsic(x1, x1))
-        # self.self_hsic2.append(linear_hsic(x2, x2))
-        self.cross_hsic.append(linear_hsic(x1, x2,unbiased=True))
-        self.self_hsic1.append(linear_hsic(x1, x1,unbiased=True))
-        self.self_hsic2.append(linear_hsic(x2, x2,unbiased=True))
+        self.cross_hsic.append(linear_hsic(x1, x2))
+        self.self_hsic1.append(linear_hsic(x1, x1))
+        self.self_hsic2.append(linear_hsic(x2, x2))
+        # self.cross_hsic.append(linear_hsic(x1, x2,unbiased=True))
+        # self.self_hsic1.append(linear_hsic(x1, x1,unbiased=True))
+        # self.self_hsic2.append(linear_hsic(x2, x2,unbiased=True))
 
     def compute(self) -> Tensor:
         assert self.total > 0, 'Please call method update(x1, x2) first!'
