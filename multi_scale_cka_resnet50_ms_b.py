@@ -24,7 +24,7 @@ import torch.nn.functional as F
 class BaselineNet(nn.Module):
     def __init__(self):
         super(BaselineNet, self).__init__()
-        self.resnet=resnet50(pretrained=False)
+        self.encoder=resnet50(pretrained=False)
         self.small_size = (32, 32)
         self.mid_size = (128, 128)
         self.large_size = (224, 224)
@@ -40,9 +40,9 @@ class BaselineNet(nn.Module):
 
 
 
-        y1 = self.resnet(small_imgs)
-        y2 = self.resnet(mid_imgs)
-        y3 = self.resnet(large_imgs)
+        y1 = self.encoder(small_imgs)
+        y2 = self.encoder(mid_imgs)
+        y3 = self.encoder(large_imgs)
 
 
         return y1, y2, y3
