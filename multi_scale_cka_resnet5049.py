@@ -75,7 +75,7 @@ def forward_features(model, x):
 #     return features
 
 def main():
-    DATA_ROOT = 'C:/Users/90532/Desktop/Datasets/imagent100/val'
+    DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet100/val'
     batch_size = 128
     dataset_size = 1280
     num_sweep = 10
