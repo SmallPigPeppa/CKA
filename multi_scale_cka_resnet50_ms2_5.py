@@ -223,4 +223,9 @@ if __name__ == '__main__':
         result = main()
         results.append(result)
 
-    print(results)
+    formatted_results = []
+    for result in results:
+        formatted_result = ', '.join([str(val) for val in result])
+        formatted_results.append(f"[{formatted_result}]")
+
+    print(', '.join(formatted_results))
