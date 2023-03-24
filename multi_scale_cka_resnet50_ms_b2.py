@@ -102,9 +102,8 @@ def forward_features(model, x):
     x = model.conv1(x)
     x = model.bn1(x)
     x = model.relu(x)
-    features.append(x.view(_b, -1))
-
     x = model.maxpool(x)
+    features.append(x.view(_b, -1))
 
     for layer in [model.layer1, model.layer2, model.layer3, model.layer4]:
         for block in layer:
