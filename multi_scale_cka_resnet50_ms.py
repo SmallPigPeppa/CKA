@@ -155,7 +155,7 @@ class MSNetPL(pl.LightningModule):
 
 
 def main():
-    DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet100/val'
+    DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
     val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-l1.ckpt'
     batch_size = 128
     dataset_size = 1280
