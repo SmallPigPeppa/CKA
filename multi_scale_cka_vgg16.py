@@ -8,35 +8,76 @@ import torchvision.transforms as transforms
 import torch.nn.functional as F
 
 from cka import CKA_Minibatch_Grid
+import numpy as np
+
+import torch
+import torchvision.models as models
 
 
 def forward_features(model, x):
     _b = x.shape[0]
-    x = model.conv1(x)
-    x = model.bn1(x)
-    x = model.relu(x)
-    x = model.maxpool(x)
 
-    x = model.layer1(x)
-    x1 = x
-    x = model.layer2(x)
-    x2 = x
-    x = model.layer3(x)
-    x3 = x
-    x = model.layer4(x)
-    x4 = x
+    # VGG16 features
+    features = list(model.features.children())
+
+    # Find indices of MaxPool layers
+    indices = [i for i, layer in enumerate(features) if isinstance(layer, torch.nn.MaxPool2d)]
+
+    # Get intermediate features after each MaxPool layer
+    x1 = torch.nn.Sequential(*features[:indices[0] + 1])(x)
+    x2 = torch.nn.Sequential(*features[indices[0] + 1: indices[1] + 1])(x1)
+    x3 = torch.nn.Sequential(*features[indices[1] + 1: indices[2] + 1])(x2)
+    x4 = torch.nn.Sequential(*features[indices[2] + 1: indices[3] + 1])(x3)
+
     return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
 
 
+# def forward_features(model, x):
+#     _b = x.shape[0]
+#     x = model.conv1(x)
+#     x = model.bn1(x)
+#     x = model.relu(x)
+#     x = model.maxpool(x)
+#
+#     x = model.layer1(x)
+#     x1 = x
+#     x = model.layer2(x)
+#     x2 = x
+#     x = model.layer3(x)
+#     x3 = x
+#     x = model.layer4(x)
+#     x4 = x
+#     return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
+
+
+# def forward_features(model, x):
+#     _b = x.shape[0]
+#     features = []
+#
+#     x = model.conv1(x)
+#     x = model.bn1(x)
+#     x = model.relu(x)
+#     features.append(x.view(_b, -1))
+#
+#     x = model.maxpool(x)
+#
+#     for layer in [model.layer1, model.layer2, model.layer3, model.layer4]:
+#         for block in layer:
+#             x = block(x)
+#             features.append(x.view(_b, -1))
+#
+#     return features
 
 def main():
     DATA_ROOT = 'C:/Users/90532/Desktop/Datasets/imagent100/val'
     batch_size = 128
     dataset_size = 1280
     num_sweep = 10
+    num_features = 9
     num_features = 4
     small_size=32
     large_size=224
+
 
 
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
@@ -75,12 +116,19 @@ def main():
     cka_matrix = cka_logger.compute()
 
     plt.title('Pretrained Resnet18 Layer CKA')
-    plt.xticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
-    plt.yticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
-    plt.imshow(cka_matrix.numpy(), origin='lower', cmap='magma')
-    plt.clim(0, 1)
-    plt.colorbar()
-    plt.savefig('resnet18.pdf')
+    # plt.xticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
+    # plt.yticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
+    # layers = [f"Layer {i + 1}" for i in range(num_features)]
+    # plt.xticks(range(num_features), layers)
+    # plt.yticks(range(num_features), layers)
+    # plt.imshow(cka_matrix.numpy(), origin='lower', cmap='magma')
+    cka_diag = np.diag(cka_matrix)
+
+    # 绘制对角线
+    plt.plot(cka_diag)
+    # plt.clim(0, 1)
+    # plt.colorbar()
+    plt.savefig('vgg16.pdf')
 
 if __name__ == '__main__':
     main()
