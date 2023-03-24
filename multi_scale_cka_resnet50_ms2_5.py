@@ -223,4 +223,4 @@ if __name__ == '__main__':
         result = main()
         results.append(result)
 
-    print(str(results))
+    print(results)
