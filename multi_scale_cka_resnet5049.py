@@ -119,6 +119,7 @@ def main():
 
     cka_matrix = cka_logger.compute()
 
+
     plt.title('Pretrained Resnet18 Layer CKA')
     # plt.xticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
     # plt.yticks([0, 1, 2, 3], ['Layer 1', 'Layer 2', 'Layer 3', 'Layer 4'])
