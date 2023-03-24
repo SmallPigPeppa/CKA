@@ -82,12 +82,11 @@ def forward_features_small(model, x):
     x0 = model.small_net[0](x)
     x0 = model.small_net[1](x0)
     x0 = model.small_net[2](x0)
-    x0 = model.small_net[3](x0)
 
     # ResNet50 layers
-    x1_0 = model.small_net[4][0](x0)
-    x1_1 = model.small_net[4][1](x1_0)
-    x1_2 = model.small_net[4][2](x1_1)
+    x1_0 = model.small_net[3][0](x0)
+    x1_1 = model.small_net[3][1](x1_0)
+    x1_2 = model.small_net[3][2](x1_1)
     x1_2 = F.interpolate(x1_2, size=model.unified_size, mode='bilinear')
 
     x2_0 = model.unified_net.layer2[0](x1_2)
