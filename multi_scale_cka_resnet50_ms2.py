@@ -79,13 +79,16 @@ def forward_features_small(model, x):
     _b = x.shape[0]
 
     # Initial layers
-    x0 = model.small_net(x)
-    x0 = F.interpolate(x0, size=model.unified_size, mode='bilinear')
+    x0 = model.small_net[0](x)
+    x0 = model.small_net[1](x0)
+    x0 = model.small_net[2](x0)
+    x0 = model.small_net[3](x0)
 
     # ResNet50 layers
-    x1_0 = model.unified_net.layer1[0](x0)
-    x1_1 = model.unified_net.layer1[1](x1_0)
-    x1_2 = model.unified_net.layer1[2](x1_1)
+    x1_0 = model.small_net[4][0](x0)
+    x1_1 = model.small_net[4][1](x1_0)
+    x1_2 = model.small_net[4][2](x1_1)
+    x1_2 = F.interpolate(x1_2, size=model.unified_size, mode='bilinear')
 
     x2_0 = model.unified_net.layer2[0](x1_2)
     x2_1 = model.unified_net.layer2[1](x2_0)
@@ -113,14 +116,18 @@ def forward_features_small(model, x):
 def forward_features_large(model, x):
     _b = x.shape[0]
 
+
     # Initial layers
-    x0 = model.large_net(x)
-    x0 = F.interpolate(x0, size=model.unified_size, mode='bilinear')
+    x0 = model.large_net[0](x)
+    x0 = model.large_net[1](x0)
+    x0 = model.large_net[2](x0)
+    x0 = model.large_net[3](x0)
 
     # ResNet50 layers
-    x1_0 = model.unified_net.layer1[0](x0)
-    x1_1 = model.unified_net.layer1[1](x1_0)
-    x1_2 = model.unified_net.layer1[2](x1_1)
+    x1_0 = model.large_net[4][0](x0)
+    x1_1 = model.large_net[4][1](x1_0)
+    x1_2 = model.large_net[4][2](x1_1)
+    x1_2 = F.interpolate(x1_2, size=model.unified_size, mode='bilinear')
 
     x2_0 = model.unified_net.layer2[0](x1_2)
     x2_1 = model.unified_net.layer2[1](x2_0)
@@ -156,7 +163,7 @@ class MSNetPL(pl.LightningModule):
 
 def main():
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet100/val'
-    val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-l1.ckpt'
+    val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-l2.ckpt'
     batch_size = 128
     dataset_size = 1280
     num_sweep = 10
@@ -191,9 +198,9 @@ def main():
             for images, targets in tqdm(data_loader):
                 images = images.cuda()
 
-                # images_small = F.interpolate(images, size=small_size, mode='bilinear')
+                images_small = F.interpolate(images, size=small_size, mode='bilinear')
                 # images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
-                features1 = forward_features_small(model, images)
+                features1 = forward_features_small(model, images_small)
                 features2 = forward_features_large(model, images)
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
