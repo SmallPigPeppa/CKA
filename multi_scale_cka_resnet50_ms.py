@@ -214,7 +214,7 @@ def main():
     plt.plot(cka_diag)
     # plt.clim(0, 1)
     # plt.colorbar()
-    plt.savefig('resnet50-2.pdf')
+    plt.savefig('resnet50-ms-2.pdf')
     print(cka_diag)
 
 
