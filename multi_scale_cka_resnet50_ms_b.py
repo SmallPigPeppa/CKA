@@ -117,7 +117,7 @@ def main():
     ]))
 
     # model = resnet50(pretrained=True)
-    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).resnet
+    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.resnet
     model.cuda()
     model.eval()
     cka_logger = CKA_Minibatch_Grid(num_features, num_features)
