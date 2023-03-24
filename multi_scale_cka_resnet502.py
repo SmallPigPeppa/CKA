@@ -116,11 +116,11 @@ def forward_features(model, x):
     return features
 
 def main():
-    DATA_ROOT = 'C:/Users/90532/Desktop/Datasets/imagent100/val'
+    DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet100/val'
     batch_size = 128
     dataset_size = 1280
     num_sweep = 10
-    num_features = 23
+    num_features = 17
     # num_features = 4
     small_size=32
     large_size=224
@@ -176,6 +176,7 @@ def main():
     # plt.clim(0, 1)
     # plt.colorbar()
     plt.savefig('resnet50-3.pdf')
+    print(cka_diag)
 
 if __name__ == '__main__':
     main()
