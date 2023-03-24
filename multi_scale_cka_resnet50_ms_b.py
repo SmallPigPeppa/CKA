@@ -24,7 +24,7 @@ import torch.nn.functional as F
 class BaselineNet(nn.Module):
     def __init__(self):
         super(BaselineNet, self).__init__()
-        self.encoder=resnet50(pretrained=False)
+        self.resnet=resnet50(pretrained=False)
         self.small_size = (32, 32)
         self.mid_size = (128, 128)
         self.large_size = (224, 224)
@@ -40,9 +40,9 @@ class BaselineNet(nn.Module):
 
 
 
-        y1 = self.encoder(small_imgs)
-        y2 = self.encoder(mid_imgs)
-        y3 = self.encoder(large_imgs)
+        y1 = self.resnet(small_imgs)
+        y2 = self.resnet(mid_imgs)
+        y3 = self.resnet(large_imgs)
 
 
         return y1, y2, y3
@@ -117,7 +117,7 @@ def main():
     ]))
 
     # model = resnet50(pretrained=True)
-    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder
+    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).resnet
     model.cuda()
     model.eval()
     cka_logger = CKA_Minibatch_Grid(num_features, num_features)
