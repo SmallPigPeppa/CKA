@@ -159,6 +159,11 @@ class MSNetPL(pl.LightningModule):
         self.ce_loss = nn.CrossEntropyLoss()
         self.mse_loss = nn.MSELoss()
 
+def create_random_subset(dataset, dataset_size):
+    total_dataset_size = len(dataset)
+    random_indices = torch.randperm(total_dataset_size)[:dataset_size]
+    random_subset = torch.utils.data.Subset(dataset, random_indices)
+    return random_subset
 
 def main():
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
@@ -180,6 +185,7 @@ def main():
         transforms.ToTensor(),
         normalize,
     ]))
+    dataset = create_random_subset(dataset, dataset_size)
 
     # model = resnet50(pretrained=True)
     model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder
@@ -205,17 +211,16 @@ def main():
                 torch.cuda.empty_cache()
 
     cka_matrix = cka_logger.compute()
-
-    plt.title('Pretrained Resnet18 Layer CKA')
     cka_diag = np.diag(cka_matrix)
-
-    # 绘制对角线
-    plt.plot(cka_diag)
-    # plt.clim(0, 1)
-    # plt.colorbar()
-    plt.savefig('resnet50-ms-2.pdf')
-    print(cka_diag)
+    return cka_diag
 
 
 if __name__ == '__main__':
-    main()
+    results = []
+    num_executions = 5
+
+    for _ in range(num_executions):
+        result = main()
+        results.append(result)
+
+    print(results)
