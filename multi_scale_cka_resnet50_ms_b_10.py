@@ -104,8 +104,8 @@ def main():
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
     val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-baseline.ckpt'
     batch_size = 128
-    dataset_size = 256
-    num_sweep = 10
+    dataset_size = 128
+    num_sweep = 1
     num_features = 17
     small_size = 32
     large_size = 224
