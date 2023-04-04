@@ -59,8 +59,9 @@ def forward_features(model, x):
     x2 = torch.nn.Sequential(*features[indices[0] + 1: indices[1] + 1])(x1)
     x3 = torch.nn.Sequential(*features[indices[1] + 1: indices[2] + 1])(x2)
     x4 = torch.nn.Sequential(*features[indices[2] + 1: indices[3] + 1])(x3)
+    x5 = torch.nn.Sequential(*features[indices[3] + 1: indices[3] + 1])(x4)
 
-    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
 
 
 class MSNetPL(pl.LightningModule):
