@@ -126,6 +126,8 @@ def main():
                 images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
                 features1 = forward_features(model, images_small)
                 print(features1.shape)
+                import pdb;pdb.set_trace()
+
                 features2 = forward_features(model, images)
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
