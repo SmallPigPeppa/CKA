@@ -54,7 +54,7 @@ def forward_features(model, x):
     # Find indices of Conv2d layers
     indices = [i for i, layer in enumerate(features) if isinstance(layer, torch.nn.Conv2d)]
 
-    import pdb;pdb.set_trace()
+    # import pdb;pdb.set_trace()
 
     # Get intermediate features after each Conv2d layer
     xs = [x]
@@ -93,7 +93,7 @@ def main():
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 5
+    num_features = 13
     small_size = 32
     large_size = 224
 
@@ -125,6 +125,7 @@ def main():
                 images_small = F.interpolate(images, size=small_size, mode='bilinear')
                 images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
                 features1 = forward_features(model, images_small)
+                print(features1.shape)
                 features2 = forward_features(model, images)
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
