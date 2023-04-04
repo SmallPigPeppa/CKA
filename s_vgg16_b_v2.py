@@ -45,7 +45,9 @@ class BaselineNet(nn.Module):
         return y1, y2, y3
 
 
-def forward_features(model, x):
+import torch
+
+def forward_features(model, x, output_size=(7, 7)):
     _b = x.shape[0]
 
     # VGG16 features
@@ -54,7 +56,8 @@ def forward_features(model, x):
     # Find indices of Conv2d layers
     indices = [i for i, layer in enumerate(features) if isinstance(layer, torch.nn.Conv2d)]
 
-    # import pdb;pdb.set_trace()
+    # Adaptive pooling layer
+    adaptive_pool = torch.nn.AdaptiveAvgPool2d(output_size)
 
     # Get intermediate features after each Conv2d layer
     xs = [x]
@@ -63,7 +66,11 @@ def forward_features(model, x):
         end = indices[i + 1] if i + 1 < len(indices) else None
         xs.append(torch.nn.Sequential(*features[start:end])(xs[-1]))
 
-    return tuple(x.view(_b, -1) for x in xs[1:])
+    # Apply adaptive pooling before each feature
+    pooled_xs = [adaptive_pool(x) for x in xs[1:]]
+
+    return tuple(x.view(_b, -1) for x in pooled_xs)
+
 
 
 
