@@ -58,6 +58,7 @@ def forward_features(model, x):
 
     # Find indices of MaxPool layers
     indices = [i for i, layer in enumerate(features) if isinstance(layer, torch.nn.MaxPool2d)]
+    import pdb;pdb.set_trace()
 
     # Get intermediate features after each MaxPool layer
     x1 = torch.nn.Sequential(*features[:indices[0] + 1])(x)
@@ -86,6 +87,11 @@ def create_random_subset(dataset, dataset_size):
 def main():
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
     val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-baseline.ckpt'
+    # model = resnet50(pretrained=True)
+    # model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.model
+    model = MSNetPL(args=None).encoder.model
+
+
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
@@ -105,9 +111,7 @@ def main():
     ]))
     dataset = create_random_subset(dataset, dataset_size)
 
-    # model = resnet50(pretrained=True)
-    # model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.model
-    model = MSNetPL(args=None).encoder.model
+
     model.cuda()
     model.eval()
     cka_logger = CKA_Minibatch_Grid(num_features, num_features)
