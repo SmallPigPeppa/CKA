@@ -22,15 +22,13 @@ import torch.nn.functional as F
 from torchvision.models import vgg16
 
 
-
 class BaselineNet(nn.Module):
     def __init__(self):
         super(BaselineNet, self).__init__()
-        self.model=vgg16(pretrained=True)
+        self.model = vgg16(pretrained=True)
         self.small_size = (32, 32)
         self.mid_size = (128, 128)
         self.large_size = (224, 224)
-
 
     def forward(self, imgs):
         small_imgs = F.interpolate(imgs, size=self.small_size, mode='bilinear')
@@ -40,12 +38,9 @@ class BaselineNet(nn.Module):
         small_imgs = F.interpolate(small_imgs, size=self.large_size, mode='bilinear')
         mid_imgs = F.interpolate(mid_imgs, size=self.large_size, mode='bilinear')
 
-
-
         y1 = self.model(small_imgs)
         y2 = self.model(mid_imgs)
         y3 = self.model(large_imgs)
-
 
         return y1, y2, y3
 
@@ -58,7 +53,8 @@ def forward_features(model, x):
 
     # Find indices of MaxPool layers
     indices = [i for i, layer in enumerate(features) if isinstance(layer, torch.nn.MaxPool2d)]
-    import pdb;pdb.set_trace()
+    import pdb;
+    pdb.set_trace()
 
     # Get intermediate features after each MaxPool layer
     x1 = torch.nn.Sequential(*features[:indices[0] + 1])(x)
@@ -67,8 +63,7 @@ def forward_features(model, x):
     x4 = torch.nn.Sequential(*features[indices[2] + 1: indices[3] + 1])(x3)
     x5 = torch.nn.Sequential(*features[indices[3] + 1: indices[4] + 1])(x3)
 
-    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1),x5.view(_b, -1)
-
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
 
 
 class MSNetPL(pl.LightningModule):
@@ -79,11 +74,13 @@ class MSNetPL(pl.LightningModule):
         self.ce_loss = nn.CrossEntropyLoss()
         self.mse_loss = nn.MSELoss()
 
+
 def create_random_subset(dataset, dataset_size):
     total_dataset_size = len(dataset)
     random_indices = torch.randperm(total_dataset_size)[:dataset_size]
     random_subset = torch.utils.data.Subset(dataset, random_indices)
     return random_subset
+
 
 def main():
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
@@ -91,7 +88,6 @@ def main():
     # model = resnet50(pretrained=True)
     # model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.model
     model = MSNetPL(args=None).encoder.model
-
 
     batch_size = 128
     dataset_size = 128
@@ -111,7 +107,6 @@ def main():
         normalize,
     ]))
     dataset = create_random_subset(dataset, dataset_size)
-
 
     model.cuda()
     model.eval()
