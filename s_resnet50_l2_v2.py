@@ -211,7 +211,7 @@ def main():
 
 if __name__ == '__main__':
     results = []
-    num_executions = =10
+    num_executions =10
     torch.random.manual_seed(0)
 
     for _ in range(num_executions):
