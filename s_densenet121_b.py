@@ -19,13 +19,13 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from torch import optim
 import torch.nn.functional as F
-from torchvision.models import vgg16
+from torchvision.models import vgg16,densenet121
 
 
 class BaselineNet(nn.Module):
     def __init__(self):
         super(BaselineNet, self).__init__()
-        self.model = vgg16(pretrained=True)
+        self.model = densenet121(pretrained=True)
         self.small_size = (32, 32)
         self.mid_size = (128, 128)
         self.large_size = (224, 224)
@@ -48,23 +48,25 @@ class BaselineNet(nn.Module):
 def forward_features(model, x):
     _b = x.shape[0]
 
-    # VGG16 features
-    features = list(model.features.children())
+    # DenseNet161 features
+    features = model.features
 
-    # Find indices of Conv2d layers
-    indices = [i for i, layer in enumerate(features) if isinstance(layer, torch.nn.Conv2d)]
+    # Process input through initial convolution, batch norm and relu layers
+    x = features.conv0(x)
+    x = features.norm0(x)
+    x = features.relu0(x)
+    x = features.pool0(x)
 
-    # import pdb;pdb.set_trace()
+    # Get intermediate features after each dense block
+    x1 = features.denseblock1(x)
+    x = features.transition1(x1)
+    x2 = features.denseblock2(x)
+    x = features.transition2(x2)
+    x3 = features.denseblock3(x)
+    x = features.transition3(x3)
+    x4 = features.denseblock4(x)
 
-    # Get intermediate features after each Conv2d layer
-    xs = [x]
-    for i in range(len(indices)):
-        start = indices[i] + 1
-        end = indices[i + 1] if i + 1 < len(indices) else None
-        xs.append(torch.nn.Sequential(*features[start:end])(xs[-1]))
-
-    return tuple(x.view(_b, -1) for x in xs[1:])
-
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
 
 
 class MSNetPL(pl.LightningModule):
@@ -93,7 +95,7 @@ def main():
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 13
+    num_features = 4
     small_size = 32
     large_size = 224
 
@@ -125,8 +127,6 @@ def main():
                 images_small = F.interpolate(images, size=small_size, mode='bilinear')
                 images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
                 features1 = forward_features(model, images_small)
-                # import pdb;pdb.set_trace()
-
                 features2 = forward_features(model, images)
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
