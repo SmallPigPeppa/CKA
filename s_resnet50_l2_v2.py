@@ -19,58 +19,70 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from torch import optim
 import torch.nn.functional as F
-from torchvision.models import vgg16, densenet121, resnext50_32x4d, resnet50
 
 
-class BaselineNet(nn.Module):
+def unified_net():
+    u_net = resnet50(pretrained=False)
+    u_net.conv1 = nn.Identity()
+    u_net.bn1 = nn.Identity()
+    u_net.relu = nn.Identity()
+    u_net.maxpool = nn.Identity()
+    u_net.layer1 = nn.Identity()
+    return u_net
+
+
+class MultiScaleNet(nn.Module):
     def __init__(self):
-        super(BaselineNet, self).__init__()
-        self.model = resnet50(pretrained=True)
+        super(MultiScaleNet, self).__init__()
+        self.large_net = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=1), resnet50(pretrained=False).layer1
+        )
+        self.mid_net = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=5, stride=1, padding=2, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=1), resnet50(pretrained=False).layer1
+        )
+        self.small_net = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=2, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True), resnet50(pretrained=False).layer1
+        )
+        self.unified_net = unified_net()
         self.small_size = (32, 32)
         self.mid_size = (128, 128)
         self.large_size = (224, 224)
+        self.unified_size = (56, 56)
 
     def forward(self, imgs):
         small_imgs = F.interpolate(imgs, size=self.small_size, mode='bilinear')
         mid_imgs = F.interpolate(imgs, size=self.mid_size, mode='bilinear')
         large_imgs = F.interpolate(imgs, size=self.large_size, mode='bilinear')
 
-        small_imgs = F.interpolate(small_imgs, size=self.large_size, mode='bilinear')
-        mid_imgs = F.interpolate(mid_imgs, size=self.large_size, mode='bilinear')
+        z1 = self.small_net(small_imgs)
+        z2 = self.mid_net(mid_imgs)
+        z3 = self.large_net(large_imgs)
 
-        y1 = self.model(small_imgs)
-        y2 = self.model(mid_imgs)
-        y3 = self.model(large_imgs)
+        z1 = F.interpolate(z1, size=self.unified_size, mode='bilinear')
+        z2 = F.interpolate(z2, size=self.unified_size, mode='bilinear')
 
-        return y1, y2, y3
+        y1 = self.unified_net(z1)
+        y2 = self.unified_net(z2)
+        y3 = self.unified_net(z3)
 
-
-def forward_features(model, x):
-    _b = x.shape[0]
-
-    # ResNeXt50_32x4d features
-    x = model.conv1(x)
-    x = model.bn1(x)
-    x = model.relu(x)
-    x = model.maxpool(x)
-
-    x1 = model.layer1(x)
-    x2 = model.layer2(x1)
-    x3 = model.layer3(x2)
-    x4 = model.layer4(x3)
-
-    return x.view(_b, -1), x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
+        return z1, z2, z3, y1, y2, y3
 
 
 def forward_features_small(model, x):
     _b = x.shape[0]
 
     # Initial layers
-    x0 = model.small_net(x)
-    x1 = model.small_net[3][2](x0)
-    x2 = model.unified_net.layer2(x1)
-    x3 = model.unified_net.layer3(x2)
-    x4 = model.unified_net.layer3(x3)
+    x0 = model.small_net[0](x)
+    x0 = model.small_net[1](x0)
+    x0 = model.small_net[2](x0)
 
     # ResNet50 layers
     x1_0 = model.small_net[3][0](x0)
@@ -94,11 +106,7 @@ def forward_features_small(model, x):
     x4_1 = model.unified_net.layer4[1](x4_0)
     x4_2 = model.unified_net.layer4[2](x4_1)
 
-    return [x0.view(_b, -1), x1_0.view(_b, -1), x1_1.view(_b, -1), x1_2.view(_b, -1),
-            x2_0.view(_b, -1), x2_1.view(_b, -1), x2_2.view(_b, -1), x2_3.view(_b, -1),
-            x3_0.view(_b, -1), x3_1.view(_b, -1), x3_2.view(_b, -1), x3_3.view(_b, -1), x3_4.view(_b, -1),
-            x3_5.view(_b, -1),
-            x4_0.view(_b, -1), x4_1.view(_b, -1), x4_2.view(_b, -1)]
+    return [x0.view(_b, -1), x1_2.view(_b, -1), x2_3.view(_b, -1), x3_5.view(_b, -1), x4_2.view(_b, -1)]
 
 
 def forward_features_large(model, x):
@@ -132,18 +140,14 @@ def forward_features_large(model, x):
     x4_1 = model.unified_net.layer4[1](x4_0)
     x4_2 = model.unified_net.layer4[2](x4_1)
 
-    return [x0.view(_b, -1), x1_0.view(_b, -1), x1_1.view(_b, -1), x1_2.view(_b, -1),
-            x2_0.view(_b, -1), x2_1.view(_b, -1), x2_2.view(_b, -1), x2_3.view(_b, -1),
-            x3_0.view(_b, -1), x3_1.view(_b, -1), x3_2.view(_b, -1), x3_3.view(_b, -1), x3_4.view(_b, -1),
-            x3_5.view(_b, -1),
-            x4_0.view(_b, -1), x4_1.view(_b, -1), x4_2.view(_b, -1)]
+    return [x0.view(_b, -1), x1_2.view(_b, -1), x2_3.view(_b, -1), x3_5.view(_b, -1), x4_2.view(_b, -1)]
 
 
 class MSNetPL(pl.LightningModule):
     def __init__(self, args):
         super().__init__()
         self.args = args
-        self.encoder = BaselineNet()
+        self.encoder = MultiScaleNet()
         self.ce_loss = nn.CrossEntropyLoss()
         self.mse_loss = nn.MSELoss()
 
@@ -158,10 +162,6 @@ def create_random_subset(dataset, dataset_size):
 def main():
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
     val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-l2.ckpt'
-    # model = resnet50(pretrained=True)
-    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.model
-    # model = MSNetPL(args=None).encoder.model
-
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
@@ -181,6 +181,8 @@ def main():
     ]))
     dataset = create_random_subset(dataset, dataset_size)
 
+    # model = resnet50(pretrained=True)
+    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder
     model.cuda()
     model.eval()
     cka_logger = CKA_Minibatch_Grid(num_features, num_features)
@@ -195,9 +197,9 @@ def main():
                 images = images.cuda()
 
                 images_small = F.interpolate(images, size=small_size, mode='bilinear')
-                images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
-                features1 = forward_features(model, images_small)
-                features2 = forward_features(model, images)
+                # images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
+                features1 = forward_features_small(model, images_small)
+                features2 = forward_features_large(model, images)
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
                 torch.cuda.empty_cache()
@@ -209,8 +211,8 @@ def main():
 
 if __name__ == '__main__':
     results = []
-    num_executions = 10
-    # torch.random.manual_seed(0)
+    num_executions = =10
+    torch.random.manual_seed(0)
 
     for _ in range(num_executions):
         result = main()
