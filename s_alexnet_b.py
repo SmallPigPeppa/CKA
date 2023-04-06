@@ -19,7 +19,7 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from torch import optim
 import torch.nn.functional as F
-from torchvision.models import vgg16,alexnet
+from torchvision.models import vgg16, alexnet
 
 
 class BaselineNet(nn.Module):
@@ -56,9 +56,9 @@ def forward_features(model, x):
     x2 = features[:6](x)  # After second ReLU
     x3 = features[:8](x)  # After third ReLU
     x4 = features[:10](x)  # After fourth ReLU
-    x4 = features[:12](x)  # After fourth ReLU
+    x5 = features[:12](x)  # After fourth ReLU
 
-    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
 
 
 class MSNetPL(pl.LightningModule):
