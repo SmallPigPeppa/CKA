@@ -19,7 +19,7 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from torch import optim
 import torch.nn.functional as F
-from torchvision.models import vgg16,googlenet
+from torchvision.models import vgg16, googlenet
 
 
 class BaselineNet(nn.Module):
@@ -62,17 +62,20 @@ def forward_features(model, x):
     x3 = features.inception3a(x2)
     x3 = features.inception3b(x3)
 
-    x4 = features.inception4a(x3)
-    x4 = features.maxpool3(x4)
+    x3 = features.maxpool3(x3)
 
-    x5 = features.inception4b(x4)
-    x5 = features.inception4c(x5)
-    x5 = features.inception4d(x5)
-    x5 = features.inception4e(x5)
-    x5 = features.maxpool4(x5)
+    x4 = features.inception4a(x3)
+
+    x4 = features.inception4b(x4)
+    x4 = features.inception4c(x4)
+    x4 = features.inception4d(x4)
+    x4 = features.inception4e(x4)
+    x4 = features.maxpool4(x4)
+
+    x5 = features.inception5b(x4)
+    x5 = features.avgpool(x5)
 
     return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
-
 
 
 class MSNetPL(pl.LightningModule):
