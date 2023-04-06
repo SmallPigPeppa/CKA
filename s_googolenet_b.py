@@ -75,7 +75,7 @@ def forward_features(model, x):
     x5 = features.inception5b(x4)
     x5 = features.avgpool(x5)
 
-    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
+    return features.maxpool1(x1).view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
 
 
 class MSNetPL(pl.LightningModule):
