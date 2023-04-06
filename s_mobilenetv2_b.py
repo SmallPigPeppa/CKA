@@ -125,7 +125,7 @@ def main():
                 features2 = forward_features(model, images)
 
 
-                import pdb;pdb.set_trace()
+                # import pdb;pdb.set_trace()
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
                 torch.cuda.empty_cache()
