@@ -83,7 +83,8 @@ def main():
     val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-baseline.ckpt'
     # model = resnet50(pretrained=True)
     # model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.model
-    model = MSNetPL(args=None).encoder.model
+    # model = MSNetPL(args=None).encoder.model
+    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.resnet
 
     batch_size = 128
     dataset_size = 128
