@@ -53,7 +53,7 @@ def forward_features(model, x):
     out =[]
     for i in [2,4,7,14,18]:
         out.append(features[:i](x))
-    return out
+    return out[0],out[1],out[2],out[3],out[4]
     # # Get intermediate features after specific layers
     # x1 = features[:2](x)  # After first ReLU6
     # x2 = features[:4](x)  # After second InvertedResidual
