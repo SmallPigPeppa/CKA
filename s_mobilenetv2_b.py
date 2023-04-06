@@ -53,7 +53,7 @@ def forward_features(model, x):
     out =[]
     for i in range(1,19):
         out.append(features[:i](x))
-    import pdb;pdb.set_trace()
+    # import pdb;pdb.set_trace()
     return out
     # Get intermediate features after specific layers
     # x1 = features[:2](x)  # After first ReLU6
@@ -91,7 +91,7 @@ def main():
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 5
+    num_features = 18
     small_size = 32
     large_size = 224
 
