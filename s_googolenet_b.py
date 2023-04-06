@@ -65,7 +65,13 @@ def forward_features(model, x):
     x4 = features.inception4a(x3)
     x4 = features.maxpool3(x4)
 
-    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1)
+    x5 = features.inception4b(x4)
+    x5 = features.inception4c(x5)
+    x5 = features.inception4d(x5)
+    x5 = features.inception4e(x5)
+    x5 = features.maxpool4(x5)
+
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
 
 
 
