@@ -57,13 +57,14 @@ def forward_features(model, x):
     # Get intermediate features after specific layers
     x1 = features[:3](x)  # After first ReLU6
     x2 = features[:4](x)  # After second InvertedResidual
-    x3 = features[:7](x)  # After fourth InvertedResidual
+    # x3 = features[:7](x)  # After fourth InvertedResidual
     x4 = features[:14](x)  # After seventh InvertedResidual
     x5 = features[:16](x)  # After seventh InvertedResidual
     x6 = features[:18](x)  # After seventh InvertedResidual
-    x7 = features[:19](x)  # After seventh InvertedResidual
+    # x7 = features[:19](x)  # After seventh InvertedResidual
 
-    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1),x6.view(_b, -1), x7.view(_b, -1)
+    # return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1),x6.view(_b, -1), x7.view(_b, -1)
+    return x1.view(_b, -1), x2.view(_b, -1),  x4.view(_b, -1), x5.view(_b, -1),x6.view(_b, -1)
 
 
 class MSNetPL(pl.LightningModule):
@@ -92,7 +93,7 @@ def main():
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 7
+    num_features = 5
     small_size = 32
     large_size = 224
 
