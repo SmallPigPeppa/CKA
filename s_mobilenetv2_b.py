@@ -123,6 +123,9 @@ def main():
                 images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
                 features1 = forward_features(model, images_small)
                 features2 = forward_features(model, images)
+
+
+                import pdb;pdb.set_trace()
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
                 torch.cuda.empty_cache()
