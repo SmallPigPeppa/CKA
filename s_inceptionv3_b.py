@@ -19,13 +19,13 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from torch import optim
 import torch.nn.functional as F
-from torchvision.models import vgg16, mobilenet_v2
+from torchvision.models import vgg16,inception_v3
 
 
 class BaselineNet(nn.Module):
     def __init__(self):
         super(BaselineNet, self).__init__()
-        self.model = mobilenet_v2(pretrained=True)
+        self.model = inception_v3(pretrained=True)
         self.small_size = (32, 32)
         self.mid_size = (128, 128)
         self.large_size = (224, 224)
@@ -48,23 +48,33 @@ class BaselineNet(nn.Module):
 def forward_features(model, x):
     _b = x.shape[0]
 
-    # MobileNetV2 features
-    features = model.features
-    # out =[]
-    # for i in [2,4,7,14,18]:
-    #     out.append(features[:i](x))
-    # return out[0],out[1],out[2],out[3],out[4]
-    # Get intermediate features after specific layers
-    x1 = features[:3](x)  # After first ReLU6
-    x2 = features[:4](x)  # After second InvertedResidual
-    # x3 = features[:7](x)  # After fourth InvertedResidual
-    x4 = features[:14](x)  # After seventh InvertedResidual
-    x5 = features[:16](x)  # After seventh InvertedResidual
-    x6 = features[:18](x)  # After seventh InvertedResidual
-    # x7 = features[:19](x)  # After seventh InvertedResidual
+    # InceptionV3 features
+    features = model
 
-    # return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1),x6.view(_b, -1), x7.view(_b, -1)
-    return x1.view(_b, -1), x2.view(_b, -1),  x4.view(_b, -1), x5.view(_b, -1),x6.view(_b, -1)
+    # Get intermediate features after specific layers
+    x1 = features.Conv2d_1a_3x3(x)
+    x1 = features.Conv2d_2a_3x3(x1)
+    x1 = features.Conv2d_2b_3x3(x1)
+    x1 = features.maxpool1(x1)
+
+    x2 = features.Conv2d_3b_1x1(x1)
+    x2 = features.Conv2d_4a_3x3(x2)
+    x2 = features.maxpool2(x2)
+
+    x3 = features.Mixed_5b(x2)
+    x3 = features.Mixed_5c(x3)
+    x3 = features.Mixed_5d(x3)
+
+    x4 = features.Mixed_6a(x3)
+    x4 = features.Mixed_6b(x4)
+    x4 = features.Mixed_6c(x4)
+    x4 = features.Mixed_6d(x4)
+    x4 = features.Mixed_6e(x4)
+
+    x5 = features.Mixed_7a(x4)
+
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
+
 
 
 class MSNetPL(pl.LightningModule):
@@ -126,9 +136,6 @@ def main():
                 images_small = F.interpolate(images_small, size=large_size, mode='bilinear')
                 features1 = forward_features(model, images_small)
                 features2 = forward_features(model, images)
-
-
-                # import pdb;pdb.set_trace()
                 cka_logger.update(features1, features2)
                 # cka_logger.update(features1, features1)
                 torch.cuda.empty_cache()
