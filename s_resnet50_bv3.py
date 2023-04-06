@@ -25,7 +25,7 @@ from torchvision.models import vgg16, densenet121, resnext50_32x4d, resnet50
 class BaselineNet(nn.Module):
     def __init__(self):
         super(BaselineNet, self).__init__()
-        self.model = resnet50(pretrained=True)
+        self.resnet = resnet50(pretrained=True)
         self.small_size = (32, 32)
         self.mid_size = (128, 128)
         self.large_size = (224, 224)
@@ -83,7 +83,8 @@ def main():
     val_ckpt_path = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-baseline.ckpt'
     # model = resnet50(pretrained=True)
     # model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.model
-    model = MSNetPL(args=None).encoder.model
+    # model = MSNetPL(args=None).encoder.model
+    model = MSNetPL.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).encoder.resnet
 
     batch_size = 128
     dataset_size = 128
