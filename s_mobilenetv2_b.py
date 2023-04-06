@@ -51,7 +51,7 @@ def forward_features(model, x):
     # MobileNetV2 features
     features = model.features
     out =[]
-    for i in range(1,19):
+    for i in range(1,18):
         out.append(features[:i](x))
     return out
     # # Get intermediate features after specific layers
@@ -90,7 +90,7 @@ def main():
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 18
+    num_features = 17
     small_size = 32
     large_size = 224
 
