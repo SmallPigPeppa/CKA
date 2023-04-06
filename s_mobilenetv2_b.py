@@ -90,7 +90,7 @@ def main():
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 5
+    num_features = 18
     small_size = 32
     large_size = 224
 
