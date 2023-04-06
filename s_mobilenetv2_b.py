@@ -50,18 +50,18 @@ def forward_features(model, x):
 
     # MobileNetV2 features
     features = model.features
-    out =[]
-    for i in [2,4,7,14,18]:
-        out.append(features[:i](x))
-    return out[0],out[1],out[2],out[3],out[4]
-    # # Get intermediate features after specific layers
-    # x1 = features[:2](x)  # After first ReLU6
-    # x2 = features[:4](x)  # After second InvertedResidual
-    # x3 = features[:7](x)  # After fourth InvertedResidual
-    # x4 = features[:14](x)  # After seventh InvertedResidual
-    # x5 = features[:18](x)  # After seventh InvertedResidual
-    #
-    # return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
+    # out =[]
+    # for i in [2,4,7,14,18]:
+    #     out.append(features[:i](x))
+    # return out[0],out[1],out[2],out[3],out[4]
+    # Get intermediate features after specific layers
+    x1 = features[:2](x)  # After first ReLU6
+    x2 = features[:4](x)  # After second InvertedResidual
+    x3 = features[:7](x)  # After fourth InvertedResidual
+    x4 = features[:14](x)  # After seventh InvertedResidual
+    x5 = features[:18](x)  # After seventh InvertedResidual
+
+    return x1.view(_b, -1), x2.view(_b, -1), x3.view(_b, -1), x4.view(_b, -1), x5.view(_b, -1)
 
 
 class MSNetPL(pl.LightningModule):
