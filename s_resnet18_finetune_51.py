@@ -140,7 +140,7 @@ if __name__ == '__main__':
         download=True,
         transform=transforms.Compose([transforms.ToTensor(), normalize])
     )
-    dataset_old = split_dataset(dataset=dataset, task_idx=4, tasks=tasks)
+    dataset_old = split_dataset(dataset=dataset, task_idx=0, tasks=tasks)
     results = []
     num_executions = 10
     for _ in range(num_executions):

@@ -107,10 +107,9 @@ def main(dataset):
 if __name__ == '__main__':
     seed_everything(5)
     DATA_ROOT = '/share/wenzhuoliu/torch_ds'
-    # joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
-    joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
+    joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
+    # joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
-    finetune_ckpt='experiments/2023_04_08_07_22_42-reparam/pxbdry3u/reparam-task1-ep=499-pxbdry3u.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     batch_size = 128
     dataset_size = 128
@@ -141,7 +140,7 @@ if __name__ == '__main__':
         download=True,
         transform=transforms.Compose([transforms.ToTensor(), normalize])
     )
-    dataset_old = split_dataset(dataset=dataset, task_idx=0, tasks=tasks)
+    dataset_old = split_dataset(dataset=dataset, task_idx=1, tasks=tasks)
     results = []
     num_executions = 10
     for _ in range(num_executions):
