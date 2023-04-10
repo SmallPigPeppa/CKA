@@ -11,7 +11,7 @@ from models.resnet18_cifar_reparam import resnet18
 
 
 def load_ckpt(ckpt_path):
-    state = torch.load(ckpt_path)["state_dict"]
+    state = torch.load(ckpt_path,map_location='cpu')["state_dict"]
     for k in list(state.keys()):
         if "encoder" in k:
             state[k.replace("encoder.", "")] = state[k]
@@ -106,7 +106,7 @@ def main(dataset):
 
 if __name__ == '__main__':
     seed_everything(5)
-    DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
+    DATA_ROOT = '/share/wenzhuoliu/torch_ds'
     joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
     batch_size = 128
