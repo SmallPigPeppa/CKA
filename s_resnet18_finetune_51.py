@@ -52,6 +52,7 @@ def forward_features(model, x):
 
     return flattened_features
 
+
 def create_random_subset(dataset, dataset_size):
     total_dataset_size = len(dataset)
     random_indices = torch.randperm(total_dataset_size)[:dataset_size]
@@ -106,7 +107,8 @@ def main(dataset):
 if __name__ == '__main__':
     seed_everything(5)
     DATA_ROOT = '/share/wenzhuoliu/torch_ds'
-    joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
+    # joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
+    joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     batch_size = 128
@@ -120,18 +122,18 @@ if __name__ == '__main__':
                                      std=[0.2675, 0.2565, 0.2761])
 
     perms = [torch.randperm(dataset_size) for _ in range(num_sweep)]
-    tasks =  [
-    [11, 22, 39, 23, 42, 30, 78, 81, 64, 20, 29, 79, 15, 69, 86, 63, 55, 53,
-        73, 68],
-    [89, 67, 58, 97, 96, 92, 37, 14, 75, 51, 54,  7,  3,  6, 50, 40, 45,  4,
-        83, 98],
-    [27, 12,  8, 99, 60, 87, 28,  5, 84, 34, 82, 16, 72, 49, 59, 31, 71, 35,
-        66, 76],
-    [61, 17, 36, 62, 13,  2, 38, 94, 80, 19, 25, 18,  0,  1, 46, 74, 85, 91,
-        52, 77],
-    [21, 33, 32, 88, 93, 70, 44, 47, 26, 57, 90, 95, 48, 65, 43, 10,  9, 56,
-        24, 41]
-]
+    tasks = [
+        [11, 22, 39, 23, 42, 30, 78, 81, 64, 20, 29, 79, 15, 69, 86, 63, 55, 53,
+         73, 68],
+        [89, 67, 58, 97, 96, 92, 37, 14, 75, 51, 54, 7, 3, 6, 50, 40, 45, 4,
+         83, 98],
+        [27, 12, 8, 99, 60, 87, 28, 5, 84, 34, 82, 16, 72, 49, 59, 31, 71, 35,
+         66, 76],
+        [61, 17, 36, 62, 13, 2, 38, 94, 80, 19, 25, 18, 0, 1, 46, 74, 85, 91,
+         52, 77],
+        [21, 33, 32, 88, 93, 70, 44, 47, 26, 57, 90, 95, 48, 65, 43, 10, 9, 56,
+         24, 41]
+    ]
     dataset = datasets.CIFAR100(
         root=DATA_ROOT,
         train=False,
