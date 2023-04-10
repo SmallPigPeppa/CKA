@@ -1,5 +1,6 @@
 from pytorch_lightning import Trainer, seed_everything
 import torch
+import torch.nn as nn
 import torch.utils.data
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
@@ -11,7 +12,7 @@ from models.resnet18_cifar_reparam import resnet18
 
 
 def load_ckpt(ckpt_path):
-    state = torch.load(ckpt_path,map_location='cpu')["state_dict"]
+    state = torch.load(ckpt_path, map_location='cpu')["state_dict"]
     for k in list(state.keys()):
         if "encoder" in k:
             state[k.replace("encoder.", "")] = state[k]
@@ -73,12 +74,14 @@ def split_dataset(dataset, task_idx, tasks):
 def main(dataset):
     dataset = create_random_subset(dataset, dataset_size)
     joint_model = resnet18()
+    joint_model.fc = nn.Identity()
     joint_state = load_ckpt(joint_ckpt)
     joint_model.load_state_dict(joint_state, strict=True)
     joint_model.cuda()
     joint_model.eval()
 
     finetune_model = resnet18()
+    finetune_model.fc = nn.Identity()
     finetune_state = load_ckpt(joint_ckpt)
     finetune_model.load_state_dict(finetune_state, strict=True)
     finetune_model.cuda()
