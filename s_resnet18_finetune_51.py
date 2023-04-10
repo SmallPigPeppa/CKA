@@ -93,7 +93,7 @@ def main(dataset):
             for images, targets in tqdm(data_loader):
                 images = images.cuda()
                 features1 = forward_features(joint_model, images)
-                import pdb;pdb.set_trace()
+                # import pdb;pdb.set_trace()
                 features2 = forward_features(finetune_model, images)
                 cka_logger.update(features1, features2)
                 torch.cuda.empty_cache()
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     DATA_ROOT = '/share/wenzhuoliu/torch_ds'
     joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
-    finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
+    # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
