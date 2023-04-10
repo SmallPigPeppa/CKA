@@ -70,7 +70,41 @@ def split_dataset(dataset, task_idx, tasks):
     return task_dataset, tasks
 
 
-def main():
+def main(dataset):
+    dataset = create_random_subset(dataset, dataset_size)
+    joint_model = resnet18()
+    joint_state = load_ckpt(joint_ckpt)
+    joint_model.load_state_dict(joint_state, strict=True)
+    joint_model.cuda()
+    joint_model.eval()
+
+    finetune_model = resnet18()
+    finetune_state = load_ckpt(joint_ckpt)
+    finetune_model.load_state_dict(finetune_state, strict=True)
+    finetune_model.cuda()
+    finetune_model.eval()
+
+    cka_logger = CKA_Minibatch_Grid(num_features, num_features)
+    with torch.no_grad():
+        for sweep in range(num_sweep):
+            dataset_sweep = Subset(dataset, perms[sweep])
+            data_loader = torch.utils.data.DataLoader(
+                dataset_sweep,
+                batch_size=batch_size, shuffle=False,
+                num_workers=4, pin_memory=True)
+            for images, targets in tqdm(data_loader):
+                images = images.cuda()
+                features1 = forward_features(joint_model, images)
+                features2 = forward_features(finetune_model, images)
+                cka_logger.update(features1, features2)
+                torch.cuda.empty_cache()
+
+    cka_matrix = cka_logger.compute()
+    cka_diag = np.diag(cka_matrix)
+    return cka_diag
+
+
+if __name__ == '__main__':
     seed_everything(5)
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
     joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-baseline.ckpt'
@@ -94,45 +128,10 @@ def main():
         transform=transforms.Compose([transforms.ToTensor(), normalize])
     )
     dataset_old = split_dataset(dataset=dataset, task_idx=0, tasks=tasks)
-    dataset_old = create_random_subset(dataset_old, dataset_size)
-
-    joint_model = resnet18()
-    joint_state = load_ckpt(joint_ckpt)
-    joint_model.load_state_dict(joint_state, strict=True)
-    joint_model.cuda()
-    joint_model.eval()
-
-    finetune_model = resnet18()
-    finetune_model = load_ckpt(joint_ckpt)
-    finetune_model.load_state_dict(joint_state, strict=True)
-    finetune_model.cuda()
-    finetune_model.eval()
-
-    cka_logger = CKA_Minibatch_Grid(num_features, num_features)
-    with torch.no_grad():
-        for sweep in range(num_sweep):
-            dataset_sweep = Subset(dataset_old, perms[sweep])
-            data_loader = torch.utils.data.DataLoader(
-                dataset_sweep,
-                batch_size=batch_size, shuffle=False,
-                num_workers=4, pin_memory=True)
-            for images, targets in tqdm(data_loader):
-                images = images.cuda()
-                features1 = forward_features(joint_model, images)
-                features2 = forward_features(finetune_model, images)
-                cka_logger.update(features1, features2)
-                torch.cuda.empty_cache()
-
-    cka_matrix = cka_logger.compute()
-    cka_diag = np.diag(cka_matrix)
-    return cka_diag
-
-
-if __name__ == '__main__':
     results = []
     num_executions = 10
     for _ in range(num_executions):
-        result = main()
+        result = main(dataset_old)
         results.append(result)
 
     formatted_results = []
