@@ -112,7 +112,7 @@ if __name__ == '__main__':
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 50
+    num_features = 51
     num_classes = 100
     num_tasks = 5
 
