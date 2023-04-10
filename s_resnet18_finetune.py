@@ -107,8 +107,8 @@ def main(dataset):
 if __name__ == '__main__':
     seed_everything(5)
     DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
-    joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA/supervised-ckpt/supervised-baseline.ckpt'
-    finetune_ckpt = ''
+    joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
+    finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
