@@ -68,7 +68,7 @@ def split_dataset(dataset, task_idx, tasks):
     mask = [(c in tasks[task_idx]) for c in dataset.targets]
     indexes = torch.tensor(mask).nonzero()
     task_dataset = Subset(dataset, indexes)
-    return task_dataset, tasks
+    return task_dataset
 
 
 def main(dataset):
@@ -131,6 +131,7 @@ if __name__ == '__main__':
         transform=transforms.Compose([transforms.ToTensor(), normalize])
     )
     dataset_old = split_dataset(dataset=dataset, task_idx=0, tasks=tasks)
+    import pdb;pdb.set_trace()
     results = []
     num_executions = 10
     for _ in range(num_executions):
