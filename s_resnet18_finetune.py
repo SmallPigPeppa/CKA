@@ -29,32 +29,23 @@ def forward_features(model, x):
     x0 = model.relu(x0)
     x0 = model.maxpool(x0)
 
-    # ResNet50 layers
+    # ResNet18 layers
     x1_0 = model.layer1[0](x0)
     x1_1 = model.layer1[1](x1_0)
-    x1_2 = model.layer1[2](x1_1)
 
-    x2_0 = model.layer2[0](x1_2)
+    x2_0 = model.layer2[0](x1_1)
     x2_1 = model.layer2[1](x2_0)
-    x2_2 = model.layer2[2](x2_1)
-    x2_3 = model.layer2[3](x2_2)
 
-    x3_0 = model.layer3[0](x2_3)
+    x3_0 = model.layer3[0](x2_1)
     x3_1 = model.layer3[1](x3_0)
-    x3_2 = model.layer3[2](x3_1)
-    x3_3 = model.layer3[3](x3_2)
-    x3_4 = model.layer3[4](x3_3)
-    x3_5 = model.layer3[5](x3_4)
 
-    x4_0 = model.layer4[0](x3_5)
+    x4_0 = model.layer4[0](x3_1)
     x4_1 = model.layer4[1](x4_0)
-    x4_2 = model.layer4[2](x4_1)
 
-    return [x0.view(_b, -1), x1_0.view(_b, -1), x1_1.view(_b, -1), x1_2.view(_b, -1),
-            x2_0.view(_b, -1), x2_1.view(_b, -1), x2_2.view(_b, -1), x2_3.view(_b, -1),
-            x3_0.view(_b, -1), x3_1.view(_b, -1), x3_2.view(_b, -1), x3_3.view(_b, -1), x3_4.view(_b, -1),
-            x3_5.view(_b, -1),
-            x4_0.view(_b, -1), x4_1.view(_b, -1), x4_2.view(_b, -1)]
+    return [x0.view(_b, -1), x1_0.view(_b, -1), x1_1.view(_b, -1),
+            x2_0.view(_b, -1), x2_1.view(_b, -1),
+            x3_0.view(_b, -1), x3_1.view(_b, -1),
+            x4_0.view(_b, -1), x4_1.view(_b, -1)]
 
 
 def create_random_subset(dataset, dataset_size):
@@ -115,7 +106,7 @@ if __name__ == '__main__':
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
-    num_features = 17
+    num_features = 9
     num_classes = 100
     num_tasks = 5
 
