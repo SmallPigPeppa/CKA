@@ -42,7 +42,7 @@ def forward_features(model, x):
             x6 = block.conv2(x5)
             x7 = block.bn2(x6)
 
-            x8 = block.add(x3, x7)
+            x8 = x3 + x7  # Use + for element-wise addition
             x3 = block.relu(x8)
 
             features += [x3, x4, x5, x6, x7, x8]
