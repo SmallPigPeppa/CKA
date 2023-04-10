@@ -73,7 +73,7 @@ def main(dataset):
 
     finetune_model = resnet18()
     finetune_model.fc = nn.Identity()
-    finetune_state = load_ckpt(joint_ckpt)
+    finetune_state = load_ckpt(finetune_ckpt)
     finetune_model.load_state_dict(finetune_state, strict=True)
     finetune_model.cuda()
     finetune_model.eval()
@@ -122,7 +122,6 @@ if __name__ == '__main__':
         transform=transforms.Compose([transforms.ToTensor(), normalize])
     )
     dataset_old = split_dataset(dataset=dataset, task_idx=0, tasks=tasks)
-    import pdb;pdb.set_trace()
     results = []
     num_executions = 10
     for _ in range(num_executions):
