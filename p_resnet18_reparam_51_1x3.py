@@ -9,6 +9,7 @@ from cka import CKA_Minibatch_Grid
 import numpy as np
 from tqdm import tqdm
 from models.resnet18_cifar_reparam_1x3 import resnet18
+from models.resnet18_cifar_reparam import resnet18 as resnet18_finetune
 
 
 def load_ckpt(ckpt_path):
@@ -76,7 +77,7 @@ def main(dataset):
     joint_model.cuda()
     joint_model.eval()
 
-    finetune_model = resnet18()
+    finetune_model = resnet18_finetune()
     finetune_model.fc = nn.Identity()
     finetune_state = load_ckpt(finetune_ckpt)
     finetune_model.load_state_dict(finetune_state, strict=True)
@@ -107,11 +108,11 @@ def main(dataset):
 if __name__ == '__main__':
     seed_everything(5)
     DATA_ROOT = '/share/wenzhuoliu/torch_ds'
-    joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
+    joint_ckpt = 'experiments-new/2023_04_13_12_06_58-reparam-fixbn-1x3/2zjhimny/reparam-fixbn-1x3-task1-ep=500-2zjhimny.ckpt'
     # joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
-    finetune_ckpt = 'experiments-new/2023_04_13_12_06_58-reparam-fixbn-1x3/2zjhimny/reparam-fixbn-1x3-task1-ep=500-2zjhimny.ckpt'
+    finetune_ckpt = 'experiments/2023_04_08_07_22_42-reparam/pxbdry3u/reparam-task1-ep=499-pxbdry3u.ckpt'
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
