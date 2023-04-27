@@ -8,7 +8,7 @@ from torch.utils.data.dataset import Dataset, Subset
 from cka import CKA_Minibatch_Grid
 import numpy as np
 from tqdm import tqdm
-from models.resnet18_cifar_reparam import resnet18
+from models.resnet18_cifar_reparam_3x3 import resnet18
 
 
 def load_ckpt(ckpt_path):
