@@ -9,7 +9,6 @@ from cka import CKA_Minibatch_Grid
 import numpy as np
 from tqdm import tqdm
 from models.resnet18_cifar_reparam import resnet18
-from models.resnet18_cifar_reparam_1x3 import resnet18 as resnet18_finetune
 
 
 def load_ckpt(ckpt_path):
@@ -77,7 +76,7 @@ def main(dataset):
     joint_model.cuda()
     joint_model.eval()
 
-    finetune_model = resnet18_finetune()
+    finetune_model = resnet18()
     finetune_model.fc = nn.Identity()
     finetune_state = load_ckpt(finetune_ckpt)
     finetune_model.load_state_dict(finetune_state, strict=True)
