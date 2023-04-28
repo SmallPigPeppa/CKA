@@ -9,7 +9,7 @@ from cka import CKA_Minibatch_Grid
 import numpy as np
 from tqdm import tqdm
 from models.resnet18_cifar_reparam_1x3 import resnet18
-from models.resnet18_cifar_reparam import resnet18 as resnet18_joint
+# from models.resnet18_cifar_reparam import resnet18 as resnet18_joint
 
 
 def load_ckpt(ckpt_path):
@@ -70,7 +70,7 @@ def split_dataset(dataset, task_idx, tasks):
 
 def main(dataset):
     dataset = create_random_subset(dataset, dataset_size)
-    joint_model = resnet18_joint()
+    joint_model = resnet18()
     joint_model.fc = nn.Identity()
     joint_state = load_ckpt(joint_ckpt)
     joint_model.load_state_dict(joint_state, strict=True)
