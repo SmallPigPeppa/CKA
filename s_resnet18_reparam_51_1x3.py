@@ -14,7 +14,7 @@ from models.resnet18_cifar_reparam import resnet18
 def load_ckpt(ckpt_path):
     state = torch.load(ckpt_path, map_location='cpu')["state_dict"]
     for k in list(state.keys()):
-        if "encoder" in k:
+        if "encoder" in k and 'momentum' not in k:
             state[k.replace("encoder.", "")] = state[k]
         del state[k]
     return state
@@ -109,8 +109,13 @@ if __name__ == '__main__':
     DATA_ROOT = '/share/wenzhuoliu/torch_ds'
     # joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
     joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
+    joint_ckpt='/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_17_15_36_42-finetune/yqa0pa3a/finetune-task0-ep=500-yqa0pa3a.ckpt'
+
+
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
     finetune_ckpt='experiments/2023_04_08_07_22_42-reparam/pxbdry3u/reparam-task1-ep=499-pxbdry3u.ckpt'
+    finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_17_15_36_42-finetune/c4jd422u/finetune-task1-ep=500-c4jd422u.ckpt'
+    finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_13_15_27_14-reparam-fixbn-1x3/1gg4yipm/reparam-fixbn-1x3-task1-ep=500-1gg4yipm.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     batch_size = 128
     dataset_size = 128
