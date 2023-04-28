@@ -117,6 +117,7 @@ if __name__ == '__main__':
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_17_15_36_42-finetune/c4jd422u/finetune-task1-ep=500-c4jd422u.ckpt'
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_13_15_27_14-reparam-fixbn-1x3/1gg4yipm/reparam-fixbn-1x3-task1-ep=500-1gg4yipm.ckpt'
     finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_13_15_26_24-reparam-1x1/10w5s2df/reparam-1x1-task1-ep=500-10w5s2df.ckpt'
+    finetune_ckpt='/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_13_15_26_24-reparam-1x1/10w5s2df/reparam-1x1-task1-ep=500-10w5s2df.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     batch_size = 128
     dataset_size = 128
