@@ -14,7 +14,7 @@ from models.resnet18_cifar_reparam import resnet18
 def load_ckpt(ckpt_path):
     state = torch.load(ckpt_path, map_location='cpu')["state_dict"]
     for k in list(state.keys()):
-        if "encoder" in k:
+        if "encoder" in k and 'momentum' not in k:
             state[k.replace("encoder.", "")] = state[k]
         del state[k]
     return state
