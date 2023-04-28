@@ -110,11 +110,13 @@ if __name__ == '__main__':
     DATA_ROOT = '/share/wenzhuoliu/torch_ds'
     joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_07_20_09-upbound/3i4ve44h/upbound-task1-ep=499-3i4ve44h.ckpt'
     joint_ckpt='/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-new/2023_04_27_16_21_45-upbound/1gflr1ex/upbound-task1-ep=500-1gflr1ex.ckpt'
+    joint_ckpt='/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_27_16_23_59-upbound/3q6yw496/upbound-task1-ep=500-3q6yw496.ckpt'
     # joint_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3t5542bb/finetune-task1-ep=499-3t5542bb.ckpt'
     # finetune_ckpt = '/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments/2023_04_08_05_21_19-finetune/3qlk4687/finetune-task0-ep=499-3qlk4687.ckpt'
     # finetune_ckpt = 'experiments-new/2023_04_13_12_06_58-reparam-fixbn-1x3/2zjhimny/reparam-fixbn-1x3-task1-ep=500-2zjhimny.ckpt'
     finetune_ckpt='experiments-new/2023_04_13_12_06_42-reparam-1x3/pq2c22bx/reparam-1x3-task1-ep=500-pq2c22bx.ckpt'
+    finetune_ckpt='/share/wenzhuoliu/code/test-code/CKA-ISSL/experiments-byol/2023_04_13_15_27_14-reparam-fixbn-1x3/1gg4yipm/reparam-fixbn-1x3-task1-ep=500-1gg4yipm.ckpt'
     batch_size = 128
     dataset_size = 128
     num_sweep = 1
