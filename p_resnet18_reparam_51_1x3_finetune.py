@@ -78,7 +78,7 @@ def main(dataset):
     joint_model.cuda()
     joint_model.eval()
 
-    finetune_model = resnet18()
+    finetune_model = resnet18_joint()
     finetune_model.fc = nn.Identity()
     finetune_state = load_ckpt(finetune_ckpt)
     finetune_model.load_state_dict(finetune_state, strict=True)
