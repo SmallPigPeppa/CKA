@@ -66,7 +66,7 @@ def create_random_subset(dataset, dataset_size):
 
 
 def main():
-    DATA_ROOT = '/share/wenzhuoliu/torch_ds/imagenet-subset/val'
+    DATA_ROOT = '/mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet-subset/val'
     val_ckpt_path = '/mnt/mmtech01/usr/liuwenzhuo/code/test-code/MSC-dali/mstrain/checkpoints/vgg16-bn-mstrain/last.ckpt'
     # model = resnet50(pretrained=True)
     model = MSC.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).model.unified_net
