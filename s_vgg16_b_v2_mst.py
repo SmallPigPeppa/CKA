@@ -19,7 +19,7 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from torch import optim
 import torch.nn.functional as F
-from torchvision.models import vgg16_bn
+from torchvision.models import vgg16_bn,vgg16
 
 from pytorch_lightning import LightningModule
 PRETRAINED = True
@@ -27,7 +27,7 @@ PRETRAINED = True
 class VGG16_L2(nn.Module):
     def __init__(self):
         super().__init__()
-        self.unified_net = vgg16_bn(pretrained=PRETRAINED)
+        self.unified_net = vgg16(pretrained=PRETRAINED)
 
 def forward_features(model, x):
     _b = x.shape[0]
@@ -67,7 +67,7 @@ def create_random_subset(dataset, dataset_size):
 
 def main():
     DATA_ROOT = '/mnt/mmtech01/usr/liuwenzhuo/torch_ds/imagenet-subset/val'
-    val_ckpt_path = '/mnt/mmtech01/usr/liuwenzhuo/code/test-code/MSC-dali/mstrain/checkpoints/vgg16-bn-mstrain/last.ckpt'
+    val_ckpt_path = '/mnt/mmtech01/usr/liuwenzhuo/code/test-code/MSC-dali/mstrain/checkpoints/vgg16-mstrain/last.ckpt'
     # model = resnet50(pretrained=True)
     model = MSC.load_from_checkpoint(checkpoint_path=val_ckpt_path, args=None).model.unified_net
 
